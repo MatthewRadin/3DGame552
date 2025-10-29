@@ -1,147 +1,146 @@
 using UnityEngine;
-// Use the new Input System
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterController : MonoBehaviour
 {
-	[Header("Movement")]
-	[Tooltip("Acceleration force applied for movement")]
-	public float moveAcceleration = 20f;
-	[Tooltip("Maximum horizontal speed (m/s)")]
-	public float maxSpeed = 8f;
+	public float moveAcceleration = 20f, maxSpeed = 8f;
+	public bool snappy = true;
+	public float decelerationTime = 0f;
+	public float coyoteTime = 0.12f, jumpBufferTime = 0.12f;
+	float coyoteTimer = 0f, jumpBufferTimer = 0f;
+	[Range(0f, 1f)] public float movementBlend = 1f;
+	float externalLock = 0f, externalLockDur = 0f;
+	public bool allowJump = true; public float jumpForce = 6f;
+	public LayerMask groundMask = ~0; public float groundCheckDistance = 0.51f;
 
-	[Header("Jump")]
-	public bool allowJump = true;
-	public float jumpForce = 6f;
-
-	[Header("Ground Check")]
-	public LayerMask groundMask = ~0; // default to everything
-	[Tooltip("Distance from sphere center to check for ground contact")]
-	public float groundCheckDistance = 0.51f;
-
-	Rigidbody rb;
-	Camera mainCamera;
-
-	// Input System state
-	Vector2 moveInput = Vector2.zero; // x = horizontal (A/D), y = vertical (W/S)
-	bool jumpRequested = false; // set in Update when jump pressed, consumed in FixedUpdate
-
-	bool isGrounded => Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, groundMask);
+	Rigidbody rb; Camera cam; Vector2 moveInput; bool jumpRequested;
 
 	void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
-		// We expect a sphere: freeze rotation only if you want no tumbling. For a rolling sphere, do not freeze.
-		// rb.freezeRotation = true; // leave commented to allow natural rolling
-
-		mainCamera = Camera.main;
+		rb.freezeRotation = true;
+		cam = Camera.main;
 	}
 
 	void Update()
 	{
-		// Read inputs using the new Input System. We sample both keyboard and gamepad so either works.
 		Vector2 kb = Vector2.zero;
-
 		if (Keyboard.current != null)
 		{
-			float h = 0f;
-			float v = 0f;
+			float h = 0f, v = 0f;
 			if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed) h -= 1f;
 			if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed) h += 1f;
 			if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) v += 1f;
 			if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) v -= 1f;
 			kb = new Vector2(h, v);
-
-			if (allowJump && Keyboard.current.spaceKey != null && Keyboard.current.spaceKey.wasPressedThisFrame)
-				jumpRequested = true;
+			if (allowJump && Keyboard.current.spaceKey != null && (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.spaceKey.isPressed))
+			{
+				jumpRequested = true; jumpBufferTimer = jumpBufferTime;
+			}
 		}
 
 		Vector2 gp = Vector2.zero;
 		if (Gamepad.current != null)
 		{
 			gp = Gamepad.current.leftStick.ReadValue();
-			// gamepad south button as jump (A on Xbox)
 			if (allowJump && Gamepad.current.buttonSouth.wasPressedThisFrame)
-				jumpRequested = true;
+			{
+				jumpRequested = true; jumpBufferTimer = jumpBufferTime;
+			}
 		}
 
-		// Prefer gamepad if active, otherwise keyboard
-		if (Gamepad.current != null && gp.sqrMagnitude > 0.001f)
-			moveInput = gp;
-		else
-			moveInput = kb;
+		moveInput = (Gamepad.current != null && gp.sqrMagnitude > 0.001f) ? gp : kb;
 	}
 
 	void FixedUpdate()
 	{
-		// Use moveInput populated in Update (supports new Input System)
+		if (IsGrounded()) coyoteTimer = coyoteTime; else coyoteTimer = Mathf.Max(0f, coyoteTimer - Time.fixedDeltaTime);
+		jumpBufferTimer = Mathf.Max(0f, jumpBufferTimer - Time.fixedDeltaTime);
+		externalLock = Mathf.Max(0f, externalLock - Time.fixedDeltaTime);
+
 		Vector3 input = new Vector3(moveInput.x, 0f, moveInput.y);
 
-		if (input.sqrMagnitude > 0.0001f)
+		if (snappy)
 		{
-			Vector3 moveDir = GetCameraRelativeDirection(input.normalized);
-
-			// Project current velocity onto horizontal plane
-			Vector3 horizontalVel = rb.linearVelocity;
-			horizontalVel.y = 0f;
-
-			// If under max speed, apply acceleration
-			if (horizontalVel.magnitude < maxSpeed || Vector3.Dot(horizontalVel.normalized, moveDir) < 0f)
+			Vector3 cur = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+			float blend = movementBlend;
+			if (externalLock > 0f && externalLockDur > 0f) blend *= 1f - (externalLock / externalLockDur);
+			if (input.sqrMagnitude > 0.0001f)
 			{
-				rb.AddForce(moveDir * moveAcceleration, ForceMode.Acceleration);
+				Vector3 dir = GetCameraRelative(input.normalized);
+				Vector3 targ = dir * maxSpeed;
+				Vector3 next = Vector3.Lerp(cur, targ, blend);
+				rb.linearVelocity = new Vector3(next.x, rb.linearVelocity.y, next.z);
+			}
+			else
+			{
+				if (decelerationTime <= 0f) rb.linearVelocity = new Vector3(Mathf.Lerp(cur.x, 0f, blend), rb.linearVelocity.y, Mathf.Lerp(cur.z, 0f, blend));
+				else
+				{
+					Vector3 decel = Vector3.MoveTowards(cur, Vector3.zero, (cur.magnitude / Mathf.Max(0.0001f, decelerationTime)) * Time.fixedDeltaTime);
+					Vector3 next = Vector3.Lerp(cur, decel, blend);
+					rb.linearVelocity = new Vector3(next.x, rb.linearVelocity.y, next.z);
+				}
 			}
 		}
-
-		// Limit horizontal speed
-		Vector3 vel = rb.linearVelocity;
-		Vector3 horiz = new Vector3(vel.x, 0f, vel.z);
-		if (horiz.magnitude > maxSpeed)
+		else
 		{
-			Vector3 capped = horiz.normalized * maxSpeed;
-			rb.linearVelocity = new Vector3(capped.x, vel.y, capped.z);
+			if (input.sqrMagnitude > 0.0001f) rb.AddForce(GetCameraRelative(input.normalized) * moveAcceleration, ForceMode.Acceleration);
+			Vector3 vel = rb.linearVelocity; Vector3 horiz = new Vector3(vel.x, 0f, vel.z);
+			if (horiz.magnitude > maxSpeed) { Vector3 c = horiz.normalized * maxSpeed; rb.linearVelocity = new Vector3(c.x, vel.y, c.z); }
 		}
 
-		// Jump handling: consume jumpRequested set in Update
-		if (allowJump && jumpRequested && isGrounded)
+		bool canJump = coyoteTimer > 0f; bool buffered = jumpRequested || jumpBufferTimer > 0f;
+		if (allowJump && buffered && canJump)
 		{
-			// zero vertical velocity first for consistent jumps
-			Vector3 vNow = rb.linearVelocity;
-			vNow.y = 0f;
-			rb.linearVelocity = vNow;
-			rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
-			jumpRequested = false;
+			Vector3 v = rb.linearVelocity; v.y = 0f; rb.linearVelocity = v; rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+			jumpRequested = false; jumpBufferTimer = 0f; coyoteTimer = 0f;
 		}
-
-		// If jump was requested but we weren't grounded yet, keep the request for a short buffer until next FixedUpdate
 	}
 
-	Vector3 GetCameraRelativeDirection(Vector3 inputDir)
+	Vector3 GetCameraRelative(Vector3 inDir)
 	{
-		if (mainCamera == null)
+		if (cam == null) return transform.TransformDirection(inDir);
+		Vector3 f = cam.transform.forward; f.y = 0f; f.Normalize(); Vector3 r = cam.transform.right; r.y = 0f; r.Normalize();
+		Vector3 m = r * inDir.x + f * inDir.z; if (m.sqrMagnitude > 1f) m.Normalize(); return m;
+	}
+
+	bool IsGrounded()
+	{
+		// Capsule: compute bottom point in world space then raycast down a short distance
+		if (TryGetComponent<CapsuleCollider>(out var cap))
 		{
-			// no camera found: use world-relative
-			return transform.TransformDirection(inputDir);
+			Vector3 centerWS = cap.transform.TransformPoint(cap.center);
+			float scaleY = cap.transform.lossyScale.y;
+			float scaleX = Mathf.Max(cap.transform.lossyScale.x, cap.transform.lossyScale.z);
+			float radiusWS = cap.radius * scaleX;
+			float halfHeightWS = (cap.height * 0.5f) * scaleY;
+			float distToBottom = Mathf.Max(0f, halfHeightWS - radiusWS);
+			Vector3 bottom = centerWS + Vector3.down * distToBottom;
+			return Physics.Raycast(bottom + Vector3.up * 0.01f, Vector3.down, groundCheckDistance + 0.01f, groundMask, QueryTriggerInteraction.Ignore);
 		}
 
-		// Camera forward on XZ plane
-		Vector3 camForward = mainCamera.transform.forward;
-		camForward.y = 0f;
-		camForward.Normalize();
+		// Sphere: cast a short ray from the sphere bottom
+		if (TryGetComponent<SphereCollider>(out var sph))
+		{
+			Vector3 centerWS = sph.transform.TransformPoint(sph.center);
+			float radiusWS = sph.radius * sph.transform.lossyScale.y;
+			Vector3 bottom = centerWS + Vector3.down * radiusWS;
+			return Physics.Raycast(bottom + Vector3.up * 0.01f, Vector3.down, groundCheckDistance + 0.01f, groundMask, QueryTriggerInteraction.Ignore);
+		}
 
-		Vector3 camRight = mainCamera.transform.right;
-		camRight.y = 0f;
-		camRight.Normalize();
-
-		Vector3 move = camRight * inputDir.x + camForward * inputDir.z;
-		if (move.sqrMagnitude > 1f) move.Normalize();
-		return move;
+		// Fallback: raycast from transform position
+		return Physics.Raycast(transform.position, Vector3.down, groundCheckDistance, groundMask);
 	}
+
+	public void ApplyKnockback(Vector3 impulse, float lockDur = 0.5f) { if (rb == null) rb = GetComponent<Rigidbody>(); rb.AddForce(impulse, ForceMode.VelocityChange); externalLock = lockDur; externalLockDur = lockDur; }
 
 	void OnDrawGizmosSelected()
 	{
-		// draw ground check ray
 		Gizmos.color = Color.green;
-		Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
+		if (TryGetComponent<CapsuleCollider>(out var cap)) { var b = cap.bounds; Vector3 bottom = new Vector3(b.center.x, b.min.y + 0.01f, b.center.z); float r = Mathf.Max(0.05f, Mathf.Min(b.extents.x, b.extents.z) * 0.9f); Gizmos.DrawWireSphere(bottom, r); }
+		else if (TryGetComponent<SphereCollider>(out var sph)) { var b = sph.bounds; Vector3 bottom = new Vector3(b.center.x, b.min.y + 0.01f, b.center.z); float r = Mathf.Max(0.05f, b.extents.x * 0.9f); Gizmos.DrawWireSphere(bottom, r); }
+		else Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
 	}
 }
