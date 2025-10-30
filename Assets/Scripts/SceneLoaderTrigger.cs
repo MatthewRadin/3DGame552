@@ -7,24 +7,14 @@ using UnityEditor;
 [RequireComponent(typeof(Collider))]
 public class SceneLoaderTrigger : MonoBehaviour
 {
-    [Tooltip("Name of the scene to load. Add the scene to Build Settings.")]
-    public string sceneName;
-
-#if UNITY_EDITOR
-    [Tooltip("Drag the Scene asset here in the Inspector (editor only). This copies its name into 'sceneName'.")]
-    public SceneAsset sceneAsset;
-#endif
-
-    [Tooltip("Tag assigned to the player object. Only objects with this tag will trigger the scene load.")]
-    public string playerTag = "Player";
-
-    [Tooltip("Optional delay before loading the scene (seconds).")]
-    public float delay = 0f;
-
-    [Tooltip("If true, uses LoadSceneAsync to avoid hitch.")]
-    public bool useAsync = true;
-
-    bool triggered = false;
+    #if UNITY_EDITOR
+        public SceneAsset sceneAsset;
+    #endif
+    [HideInInspector] public string sceneName;
+    [HideInInspector] public string playerTag = "Player";
+    [HideInInspector] public float delay = 0f;
+    [HideInInspector] public bool useAsync = true;
+    [HideInInspector] bool triggered = false;
 
     void Awake()
     {
