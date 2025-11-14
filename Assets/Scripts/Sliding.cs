@@ -21,8 +21,6 @@ public class Sliding : MonoBehaviour
     private float horizontalInput;
     private float verticalInput;
 
-    private bool sliding;
-
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -48,12 +46,12 @@ public class Sliding : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (sliding)
+        if (pm.sliding)
             SlidingMovement();
     }
     private void StartSlide()
     {
-        sliding = true;
+        pm.sliding = true;
 
         playerObj.localScale = new Vector3(playerObj.localScale.x, slideYScale, playerObj.localScale.z);
         rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
@@ -65,16 +63,26 @@ public class Sliding : MonoBehaviour
         Vector3 inputDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         inputDirection.y = 0f;
 
-        rb.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
+        //Sliding normal
+        if (!pm.OnSlope() || rb.linearVelocity.y > 0.1f)
+        {
+            rb.AddForce(inputDirection.normalized * slideForce, ForceMode.Force);
 
-        slideTimer -= Time.deltaTime;
+            slideTimer -= Time.deltaTime;
+        }
+
+        //Sliding down slope
+        else
+        {
+            rb.AddForce(pm.GetSlopeMoveDirection(inputDirection) * slideForce, ForceMode.Force);
+        }
 
         if (slideTimer <= 0)
             StopSlide();
     }
     private void StopSlide()
     {
-        sliding = false;
+        pm.sliding = false;
 
         playerObj.localScale = new Vector3(playerObj.localScale.x, startYScale, playerObj.localScale.z);
     }
