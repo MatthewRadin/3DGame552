@@ -2534,6 +2534,7 @@ GameObject:
   - component: {fileID: 1491604942}
   - component: {fileID: 1491604947}
   - component: {fileID: 1491604948}
+  - component: {fileID: 1491604949}
   m_Layer: 0
   m_Name: chartest
   m_TagString: Untagged
@@ -2706,6 +2707,22 @@ MonoBehaviour:
   maxSlideTime: 0.75
   slideForce: 200
   slideYScale: 0.5
+--- !u!114 &1491604949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491604940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 870a845510743724c8dcbf0bd9eefb79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PaintballShot
+  paintball: {fileID: 7403371407402886120, guid: 8965f4fb70de41f46aa6117e0548c2ce, type: 3}
+  camera: {fileID: 330585546}
+  gunLocation: {fileID: 339889846}
+  shootForce: 25
 --- !u!1 &1574805667
 GameObject:
   m_ObjectHideFlags: 0
