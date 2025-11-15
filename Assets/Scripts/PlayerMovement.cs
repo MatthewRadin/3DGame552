@@ -51,6 +51,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+        moveSpeed = walkSpeed;
     }
     private void Update()
     {
@@ -134,7 +135,8 @@ public class PlayerMovement : MonoBehaviour
 
         while (time < difference)
         {
-            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
+            Debug.Log("Speed is " +moveSpeed);
+            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time);
             time += Time.deltaTime;
             yield return null;
         }
