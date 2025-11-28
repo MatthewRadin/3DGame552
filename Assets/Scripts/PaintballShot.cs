@@ -11,13 +11,12 @@ public class PaintballShot : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.lKey.wasPressedThisFrame)
+        if (Mouse.current.leftButton.wasPressedThisFrame)
             ShootBall();
     }
 
     private void ShootBall()
     {
-        // Instantiate at the gun location, NOT as a child
         GameObject ball = Instantiate(
             paintball,
             gunLocation.position,
@@ -26,9 +25,10 @@ public class PaintballShot : MonoBehaviour
 
         Rigidbody rb = ball.GetComponent<Rigidbody>();
 
-        // Fire toward where the camera is pointing
         rb.linearVelocity = camera.forward * shootForce;
 
         Destroy(ball, 3f);
+
+        GetComponent<PlayerMovement>().Recoil();
     }
 }

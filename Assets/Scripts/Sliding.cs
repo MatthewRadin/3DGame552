@@ -38,10 +38,10 @@ public class Sliding : MonoBehaviour
         if (Keyboard.current.sKey.isPressed) verticalInput -= 1f;
         if (Keyboard.current.wKey.isPressed) verticalInput += 1f;
 
-        if (Keyboard.current.commaKey.wasPressedThisFrame)
+        if (Keyboard.current.shiftKey.wasPressedThisFrame)
             StartSlide();
 
-        if (Keyboard.current.commaKey.wasReleasedThisFrame)
+        if (Keyboard.current.shiftKey.wasReleasedThisFrame)
             StopSlide();
     }
     private void FixedUpdate()

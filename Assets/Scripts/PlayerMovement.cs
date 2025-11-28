@@ -29,6 +29,14 @@ public class PlayerMovement : MonoBehaviour
     private RaycastHit slopeHit;
     private bool exitingSlope;
 
+    [Header("Recoil Handling")]
+    [SerializeField] private float recoilForce = 10f;
+    [SerializeField] private bool resetYVelocity = true;
+
+    [Header("Velocity Smoothing")]
+    [Tooltip("How fast horizontal velocity is lerped toward the allowed speed. Higher = quicker.")]
+    [SerializeField] private float velocityLerpSpeed = 6f;
+
     public Transform orientation;
 
     float horizontalInput;
@@ -52,7 +60,10 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         moveSpeed = walkSpeed;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
+
     private void Update()
     {
         // ground check
@@ -68,10 +79,12 @@ public class PlayerMovement : MonoBehaviour
         else
             rb.linearDamping = 0;
     }
+
     private void FixedUpdate()
     {
         MovePlayer();
     }
+
     private void MyInput()
     {
         horizontalInput = 0;
@@ -91,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
             Invoke(nameof(ResetJump), jumpCooldown);
         }
     }
+
     private void StateHandler()
     {
         // SLIDING
@@ -116,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
             desiredMoveSpeed = walkSpeed;
         }
 
-        if(Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f)
+        if (Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f)
         {
             StopAllCoroutines();
             StartCoroutine(SmoothlyLerpMoveSpeed());
@@ -127,6 +141,7 @@ public class PlayerMovement : MonoBehaviour
         }
         lastDesiredMoveSpeed = desiredMoveSpeed;
     }
+
     private IEnumerator SmoothlyLerpMoveSpeed()
     {
         float time = 0;
@@ -135,7 +150,6 @@ public class PlayerMovement : MonoBehaviour
 
         while (time < difference)
         {
-            Debug.Log("Speed is " +moveSpeed);
             moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time);
             time += Time.deltaTime;
             yield return null;
@@ -143,8 +157,11 @@ public class PlayerMovement : MonoBehaviour
 
         moveSpeed = desiredMoveSpeed;
     }
+
     private void MovePlayer()
     {
+        if (!grounded && sliding) rb.linearDamping = groundDrag;
+
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         moveDirection = new Vector3(moveDirection.x, 0, moveDirection.z);
 
@@ -164,26 +181,41 @@ public class PlayerMovement : MonoBehaviour
 
         rb.useGravity = !OnSlope();
     }
+
     private void SpeedControl()
     {
-        //Slope movement
         if (OnSlope() && !exitingSlope)
         {
-            if (rb.linearVelocity.magnitude > moveSpeed)
-                rb.linearVelocity = rb.linearVelocity.normalized * moveSpeed;
+            Vector3 current = rb.linearVelocity;
+            float currentMag = current.magnitude;
+            if (currentMag > 0.0001f)
+            {
+                Vector3 target = current.normalized * Mathf.Min(currentMag, moveSpeed);
+                Vector3 newVel = Vector3.Lerp(current, target, Time.deltaTime * velocityLerpSpeed);
+                rb.linearVelocity = newVel;
+            }
         }
-
         else
         {
             Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-
-            if (limitedVel.magnitude < flatVel.magnitude)
+            if (flatVel.sqrMagnitude > 0.00001f)
             {
-                rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+
+                if (limitedVel.magnitude < flatVel.magnitude)
+                {
+                    Vector3 newFlat = Vector3.Lerp(flatVel, limitedVel, Time.deltaTime * velocityLerpSpeed);
+                    rb.linearVelocity = new Vector3(newFlat.x, rb.linearVelocity.y, newFlat.z);
+                }
+                else if (flatVel.magnitude < limitedVel.magnitude)
+                {
+                    Vector3 newFlat = Vector3.Lerp(flatVel, limitedVel, Time.deltaTime * (velocityLerpSpeed * 0.5f));
+                    rb.linearVelocity = new Vector3(newFlat.x, rb.linearVelocity.y, newFlat.z);
+                }
             }
         }
     }
+
     private void Jump()
     {
         exitingSlope = true;
@@ -193,12 +225,14 @@ public class PlayerMovement : MonoBehaviour
 
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
+
     private void ResetJump()
     {
         readyToJump = true;
 
         exitingSlope = false;
     }
+
     public bool OnSlope()
     {
         if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
@@ -208,8 +242,25 @@ public class PlayerMovement : MonoBehaviour
         }
         return false;
     }
+
     public Vector3 GetSlopeMoveDirection(Vector3 direction)
     {
         return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+    }
+    public void Recoil()
+    {
+        Vector3 flatBefore = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+        if (resetYVelocity)
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+        Vector3 backward = -orientation.forward;
+        backward.Normalize();
+        backward.y = backward.y / 1.5f;
+
+        Vector3 impulse = backward * recoilForce;
+        rb.AddForce(impulse, ForceMode.Impulse);
+
+        rb.linearVelocity = new Vector3(flatBefore.x, rb.linearVelocity.y, flatBefore.z);
     }
 }
