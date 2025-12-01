@@ -1137,7 +1137,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 339956456}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8e6073889d015e94da44892795b6bd68, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1244,6 +1244,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  maxSlopeAngle: 40
   paintball: {fileID: 7403371407402886120, guid: 8965f4fb70de41f46aa6117e0548c2ce, type: 3}
   shootForce: 25
 --- !u!1 &348644396
@@ -3037,7 +3038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 870a845510743724c8dcbf0bd9eefb79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PaintballShot
-  paintball: {fileID: 7403371407402886120, guid: 8965f4fb70de41f46aa6117e0548c2ce, type: 3}
+  paintball: {fileID: 7403371407402886120, guid: a868233b483842d488760ae9b0725c60, type: 3}
   camera: {fileID: 330585546}
   gunLocation: {fileID: 339889846}
   shootForce: 25

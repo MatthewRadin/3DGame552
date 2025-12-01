@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6742882884554139175}
   - component: {fileID: 1974682830988958186}
   m_Layer: 8
-  m_Name: Paintball
+  m_Name: Paintball Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5dae222570d8eff4393f94f527385afe, type: 2}
+  - {fileID: 2100000, guid: 10223cba906e7c7499a896150ee2341d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
