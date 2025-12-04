@@ -1,11 +1,14 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder;
 
 public class PaintballShot : MonoBehaviour
 {
     [SerializeField] private GameObject paintball;
     [SerializeField] private Transform camera;
     [SerializeField] private Transform gunLocation;
+    [SerializeField] private LayerMask allButPlayerMask;
 
     [SerializeField] private float shootForce = 25f;
 
@@ -25,7 +28,21 @@ public class PaintballShot : MonoBehaviour
 
         Rigidbody rb = ball.GetComponent<Rigidbody>();
 
-        rb.linearVelocity = camera.forward * shootForce;
+        Ray ray = new Ray(camera.transform.position, camera.transform.forward);
+        RaycastHit hit;
+
+        Vector3 shootDirection;
+
+        if (Physics.Raycast(ray, out hit, 1000f, allButPlayerMask))
+        {
+            shootDirection = (hit.point - gunLocation.position).normalized;
+        }
+        else
+        {
+            shootDirection = camera.transform.forward;
+        }
+
+        rb.linearVelocity = shootDirection * shootForce;
 
         Destroy(ball, 3f);
 

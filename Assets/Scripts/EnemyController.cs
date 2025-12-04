@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -70,7 +71,7 @@ public class EnemyController : MonoBehaviour
     {
         GameObject ball = Instantiate(
             paintball,
-            transform.position + (mainPlayerPos - enemyPos).normalized,
+            transform.position + ((mainPlayerPos - enemyPos).normalized * 2),
             Quaternion.identity
         );
 
@@ -92,5 +93,13 @@ public class EnemyController : MonoBehaviour
     public Vector3 GetSlopeMoveDirection(Vector3 direction)
     {
         return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("PlayerBullet")) //Mods, kill this bean
+        {
+            Destroy(collision.gameObject);
+            Destroy(this.gameObject);
+        }
     }
 }
