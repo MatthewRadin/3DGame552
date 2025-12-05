@@ -2,6 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.ProBuilder;
+using UnityEngine.UI;
 
 public class PaintballShot : MonoBehaviour
 {
@@ -12,10 +13,19 @@ public class PaintballShot : MonoBehaviour
 
     [SerializeField] private float shootForce = 25f;
 
+    [SerializeField] private Slider timerSlider;
+
+    private float shotTimer = 1f;
+
     void Update()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        timerSlider.value = shotTimer;
+        shotTimer += Time.deltaTime;
+        if (shotTimer > 1f && Mouse.current.leftButton.wasPressedThisFrame)
+        {
             ShootBall();
+            shotTimer = 0f;
+        }
     }
 
     private void ShootBall()

@@ -24,6 +24,10 @@ public class EnemyController : MonoBehaviour
     private Rigidbody rb;
     private Vector3 mainPlayerPos, enemyPos, moveDirection;
     private float shotTimer;
+    private void Awake()
+    {
+        GameObject.FindGameObjectWithTag("LevelManager").gameObject.GetComponent<LevelManager>().IncrementEnemy();
+    }
     private void Start()
     {
         mainPlayer = GameObject.FindGameObjectWithTag("Player");
@@ -98,6 +102,7 @@ public class EnemyController : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("PlayerBullet")) //Mods, kill this bean
         {
+            GameObject.FindGameObjectWithTag("LevelManager").gameObject.GetComponent<LevelManager>().EnemyKilled();
             Destroy(collision.gameObject);
             Destroy(this.gameObject);
         }
