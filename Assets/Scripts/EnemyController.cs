@@ -20,10 +20,14 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private GameObject paintball;
     [SerializeField] private float shootForce = 25f;
 
+    [Header("Animator")]
+    [SerializeField] private Animator animator;
+
     private GameObject mainPlayer;
     private Rigidbody rb;
     private Vector3 mainPlayerPos, enemyPos, moveDirection;
     private float shotTimer;
+    private bool isAlive = true;
     private void Awake()
     {
         GameObject.FindGameObjectWithTag("LevelManager").gameObject.GetComponent<LevelManager>().IncrementEnemy();
@@ -35,31 +39,33 @@ public class EnemyController : MonoBehaviour
     }
     private void Update()
     {
-        // Find direction to main character
+        if (!isAlive) return;
         mainPlayerPos = mainPlayer.transform.position;
         enemyPos = transform.position;
         moveDirection = (new Vector3(mainPlayerPos.x - enemyPos.x, 0, mainPlayerPos.z - enemyPos.z)).normalized;
 
+        Vector3 lookDir = mainPlayerPos - enemyPos;
+        lookDir = -lookDir;
+        lookDir.y = 0;
+        if (lookDir != Vector3.zero)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(lookDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 10f * Time.deltaTime);
+        }
         if (OnSlope())
-        {
             transform.position += GetSlopeMoveDirection(moveDirection) * moveSpeed * Time.deltaTime;
-        }
         else
-        {
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
-        }
 
-        // if in the air, move enemy back
         if (!Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 2f, whatIsGround))
             transform.position = enemyPos;
 
-        // If their is a way to see the player, shoot a shot in their direction, Update a shot counter so that they can't shoot too often
         if (shotTimer <= 0)
         {
             RaycastHit hit;
             Vector3 direction = mainPlayerPos - enemyPos;
 
-            if (Physics.Raycast(transform.position, direction.normalized, out hit, 25f, ~0)) // all layers
+            if (Physics.Raycast(transform.position, direction.normalized, out hit, 25f, ~0))
             {
                 if (hit.transform.CompareTag("Player"))
                 {
@@ -71,8 +77,10 @@ public class EnemyController : MonoBehaviour
 
         shotTimer -= Time.deltaTime;
     }
+
     private void ShootShot()
     {
+        animator.SetTrigger("Shoot");
         GameObject ball = Instantiate(
             paintball,
             transform.position + ((mainPlayerPos - enemyPos).normalized * 2),
@@ -103,8 +111,10 @@ public class EnemyController : MonoBehaviour
         if(collision.gameObject.CompareTag("PlayerBullet")) //Mods, kill this bean
         {
             GameObject.FindGameObjectWithTag("LevelManager").gameObject.GetComponent<LevelManager>().EnemyKilled();
+            animator.SetBool("isDead", true);
+            GetComponent<CapsuleCollider>().enabled = false;
             Destroy(collision.gameObject);
-            Destroy(this.gameObject);
+            Destroy(this.gameObject, 1f);
         }
     }
 }
