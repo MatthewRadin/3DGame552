@@ -17,17 +17,31 @@ public class MusicClass : MonoBehaviour
     private AudioSource audioSource;
     private Coroutine switchCoroutine;
 
+    // NEW: singleton instance to prevent duplicates and restarts on reload
+    private static MusicClass instance;
     private void Awake()
     {
+        // If another instance exists, remove this one immediately.
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
         DontDestroyOnLoad(gameObject);
+
         audioSource = GetComponent<AudioSource>();
-        if (primaryClip != null)
+
+        // Only (re)assign/play primaryClip if needed (prevents restart on scene reload).
+        if (primaryClip != null && (audioSource.clip != primaryClip || !audioSource.isPlaying))
         {
             audioSource.clip = primaryClip;
             audioSource.time = 0f;
             audioSource.Play();
             audioSource.loop = primaryLoopStartTime <= 0f;
         }
+
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
