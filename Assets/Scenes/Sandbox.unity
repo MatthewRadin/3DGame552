@@ -4646,7 +4646,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   timerText: {fileID: 1536245622}
   enemiesLeft: {fileID: 1808629223}
-  timeForLevel: 10
+  timeForLevel: 20
 --- !u!4 &1879285206
 Transform:
   m_ObjectHideFlags: 0
