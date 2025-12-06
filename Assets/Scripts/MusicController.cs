@@ -1,7 +1,9 @@
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 
 public class MusicClass : MonoBehaviour
@@ -11,7 +13,9 @@ public class MusicClass : MonoBehaviour
     [SerializeField, HideInInspector] private float primaryLoopTriggerTime = -1f;
     [SerializeField, HideInInspector] private float primaryLoopStartTime = 0f;
     [SerializeField] private bool secondaryLoops = true;
+#if UNITY_EDITOR
     [SerializeField] private SceneAsset triggerSceneAsset = null;
+#endif
     [SerializeField, HideInInspector] private string triggerSceneName = "";
 
     private AudioSource audioSource;
@@ -48,18 +52,18 @@ public class MusicClass : MonoBehaviour
     private void OnDestroy() { SceneManager.sceneLoaded -= OnSceneLoaded; }
 
 #if UNITY_EDITOR
-private void OnValidate()
-{
-    if (triggerSceneAsset != null)
+    private void OnValidate()
     {
-        triggerSceneName = triggerSceneAsset.name;
+        if (triggerSceneAsset != null)
+        {
+            triggerSceneName = triggerSceneAsset.name;
+        }
     }
-}
 #endif
 
 private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 {
-    if (triggerSceneAsset == null) return;
+    if (string.IsNullOrEmpty(triggerSceneName)) return;
     if (scene.name != triggerSceneName) return;
 
     if (audioSource == null || audioSource.clip != primaryClip || !audioSource.isPlaying) return;
