@@ -6,9 +6,14 @@ public class MenuManager : MonoBehaviour
 {
     public static bool isGamePaused = false;
     [SerializeField] private GameObject pauseMenuUI;
+    private void Start()
+    {
+        isGamePaused = false;
+        Time.timeScale = 1.0f;
+    }
     void Update()
     {
-        if (Keyboard.current.pKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (pauseMenuUI != null && Keyboard.current.pKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             if (isGamePaused)
             {
@@ -36,6 +41,18 @@ public class MenuManager : MonoBehaviour
     {
         Resume();
         SceneManager.LoadScene(0); //Main menu
+    }
+    public void PlayGame()
+    {
+        SceneManager.LoadScene(1);  // Load level 1 for now
+    }
+    public void HowToPlay()
+    {
+        Debug.Log("Hi");
+    }
+    public void About()
+    {
+        Debug.Log("About");
     }
     public void Quit()
     {
