@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -32,7 +33,11 @@ public class MouseRotationController : MonoBehaviour
 
     private void Update()
     {
-    Vector2 mouseDelta = Vector2.zero;
+        if (MenuManager.isGamePaused)
+        {
+            return;
+        }
+        Vector2 mouseDelta = Vector2.zero;
         if (Mouse.current != null)
             mouseDelta = Mouse.current.delta.ReadValue();
 

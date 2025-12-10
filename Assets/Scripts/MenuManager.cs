@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -6,7 +7,12 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     public static bool isGamePaused = false;
+    [Header("Game Menus")]
+    [SerializeField] private GameObject gameMenuUI;
     [SerializeField] private GameObject pauseMenuUI;
+    [SerializeField] private GameObject winMenuUI;
+    [SerializeField] private GameObject loseMenuUI;
+
 
     [Header("Main Menu")]
     [SerializeField] private GameObject mainMenuUI;
@@ -22,8 +28,11 @@ public class MenuManager : MonoBehaviour
         isGamePaused = false;
         Time.timeScale = 1.0f;
         int currentLevel = PlayerPrefs.GetInt("CurrentLevel");
-        level02Button.GetComponent<Button>().interactable = currentLevel > 1;
-        level03Button.GetComponent<Button>().interactable = currentLevel > 2;
+        if (level02Button != null )
+        {
+            level02Button.GetComponent<Button>().interactable = currentLevel > 1;
+            level03Button.GetComponent<Button>().interactable = currentLevel > 2;
+        }
 
     }
     void Update()
@@ -45,16 +54,20 @@ public class MenuManager : MonoBehaviour
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1.0f;
         isGamePaused = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     public void Pause()
     {
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0.0f;
         isGamePaused = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
     public void Menu()
     {
-        Resume();
+        Time.timeScale = 1f;
         SceneManager.LoadScene(0); //Main menu
     }
     public void PlayGame()
@@ -65,7 +78,7 @@ public class MenuManager : MonoBehaviour
     }
     public void HowToPlay()
     {
-        Debug.Log("Hi");
+        SceneManager.LoadScene(1);
     }
     public void About()
     {
@@ -80,15 +93,40 @@ public class MenuManager : MonoBehaviour
     }
     public void Level1Load()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
     public void Level2Load()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene(3);
     }
     public void Level3Load()
     {
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene(4);
+    }
+    public void Restart()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    public void ShowLoseMenu()
+    {
+        Time.timeScale = 0f;
+        gameMenuUI.SetActive(false);
+        pauseMenuUI.SetActive(false);
+        loseMenuUI.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    public void ShowWinMenu()
+    {
+        Time.timeScale = 0f;
+        gameMenuUI.SetActive(false);
+        pauseMenuUI.SetActive(false);
+        winMenuUI.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
     public void Quit()
     {

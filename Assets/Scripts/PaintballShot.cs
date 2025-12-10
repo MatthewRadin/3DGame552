@@ -21,7 +21,7 @@ public class PaintballShot : MonoBehaviour
     {
         timerSlider.value = shotTimer;
         shotTimer += Time.deltaTime;
-        if (shotTimer > 1f && Mouse.current.leftButton.wasPressedThisFrame)
+        if (!MenuManager.isGamePaused && shotTimer > 1f && Mouse.current.leftButton.wasPressedThisFrame)
         {
             ShootBall();
             shotTimer = 0f;
