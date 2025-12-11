@@ -8,6 +8,9 @@ TagManager:
   - PlayerBullet
   - EnemyBullet
   - LevelManager
+  - CameraPosition
+  - CameraGun
+  - MouseRotation
   layers:
   - Default
   - TransparentFX
