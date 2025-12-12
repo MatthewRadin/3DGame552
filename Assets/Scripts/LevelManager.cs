@@ -11,6 +11,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private float timeForLevel;
     [SerializeField] private MenuManager menuManager;
     [SerializeField] private GameObject dancingGuy;
+    [SerializeField] private TextMeshProUGUI timeLeftText;
     private int startingEnemyCount = 0;
     private int numEnemiesAlive = 0;
     private bool gameFinished = false;
@@ -63,6 +64,8 @@ public class LevelManager : MonoBehaviour
         gameFinished = true;
 
         Instantiate(dancingGuy, GameObject.FindGameObjectWithTag("Player").transform.position, GameObject.FindGameObjectWithTag("Player").transform.rotation);
+
+        timeLeftText.text = "Time remaining: "+FormatTime(timeForLevel);
 
         if (levelNumber + 1 > PlayerPrefs.GetInt("CurrentLevel"))
             PlayerPrefs.SetInt("CurrentLevel", levelNumber + 1);
