@@ -1473,7 +1473,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Matthew Radin
 
-    Textures and Level Design'
+    Music and Level Design'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 79459efec17a4d00a321bdcc27bbc385, type: 2}
@@ -1796,7 +1796,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12cfab67f797919468243449231ad62b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  gameMenuUI: {fileID: 0}
   pauseMenuUI: {fileID: 0}
+  winMenuUI: {fileID: 0}
+  loseMenuUI: {fileID: 0}
   mainMenuUI: {fileID: 1252505255}
   levelsMenuUI: {fileID: 282072746}
   aboutUI: {fileID: 1689141769}
