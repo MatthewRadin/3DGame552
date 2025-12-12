@@ -52,6 +52,8 @@ public class LevelManager : MonoBehaviour
     }
     public void EnemyKilled()
     {
+        SfxController.PlayPaintballHitmarker();
+        SfxController.PlayEnemyDeath();
         timeForLevel += 1;
         numEnemiesAlive--;
         enemiesLeft.text = numEnemiesAlive.ToString() + "/" + startingEnemyCount.ToString();

@@ -30,6 +30,7 @@ public class PaintballShot : MonoBehaviour
 
     private void ShootBall()
     {
+        SfxController.PlayPlayerShoot();
         GameObject ball = Instantiate(
             paintball,
             gunLocation.position,

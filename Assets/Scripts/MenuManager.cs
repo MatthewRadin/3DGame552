@@ -112,6 +112,7 @@ public class MenuManager : MonoBehaviour
     }
     public void ShowLoseMenu()
     {
+        SfxController.PlayPlayerDeath();
         Time.timeScale = 0f;
         gameMenuUI.SetActive(false);
         pauseMenuUI.SetActive(false);

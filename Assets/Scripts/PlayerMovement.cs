@@ -219,6 +219,7 @@ public class PlayerMovement : MonoBehaviour
     private void Jump()
     {
         exitingSlope = true;
+        SfxController.PlayPlayerJump();
 
         // reset y velocity
         rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
