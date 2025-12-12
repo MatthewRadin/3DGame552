@@ -710,10 +710,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988769772a2a20749a5129ef0f73c3f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  levelNumber: 1
+  levelNumber: 3
   timerText: {fileID: 1914467014}
   enemiesLeft: {fileID: 541124895}
-  timeForLevel: 120
+  timeForLevel: 60
   menuManager: {fileID: 1904410161}
   dancingGuy: {fileID: 8079337167870495920, guid: 39f03e8f1f543b44eb4296df9d96758c, type: 3}
 --- !u!4 &51257851
@@ -34364,18 +34364,18 @@ Mesh:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1200537926}
-  - {fileID: 51257851}
-  - {fileID: 670674971}
   - {fileID: 1585432241}
-  - {fileID: 1318923810}
-  - {fileID: 1749236838}
-  - {fileID: 1904410165}
+  - {fileID: 1200537926}
   - {fileID: 407592942}
+  - {fileID: 670674971}
+  - {fileID: 1318923810}
   - {fileID: 473148909}
   - {fileID: 1972915378}
   - {fileID: 831195092}
   - {fileID: 772462441}
   - {fileID: 1878893874}
   - {fileID: 3208709}
+  - {fileID: 51257851}
+  - {fileID: 1904410165}
+  - {fileID: 1749236838}
   - {fileID: 1228747819}

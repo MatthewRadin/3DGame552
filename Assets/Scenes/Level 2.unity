@@ -628,7 +628,7 @@ GameObject:
   - component: {fileID: 128616293}
   m_Layer: 7
   m_Name: cameraposition
-  m_TagString: Untagged
+  m_TagString: CameraPosition
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1033,15 +1033,15 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 365662125}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: be6c05ebd56b165409a384fdb36be9fd, type: 3}
       propertyPath: m_LocalScale.x
-      value: 150000.12
+      value: 150000.16
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: be6c05ebd56b165409a384fdb36be9fd, type: 3}
       propertyPath: m_LocalScale.y
-      value: 150000.12
+      value: 150000.14
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: be6c05ebd56b165409a384fdb36be9fd, type: 3}
       propertyPath: m_LocalScale.z
@@ -1049,15 +1049,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: be6c05ebd56b165409a384fdb36be9fd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15.5
+      value: -50.4647
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: be6c05ebd56b165409a384fdb36be9fd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.6
+      value: 18.988441
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: be6c05ebd56b165409a384fdb36be9fd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 94.6
+      value: 7.4183884
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: be6c05ebd56b165409a384fdb36be9fd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1103,6 +1103,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2093126926}
   m_SourcePrefab: {fileID: 100100000, guid: be6c05ebd56b165409a384fdb36be9fd, type: 3}
+--- !u!4 &220493673 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: be6c05ebd56b165409a384fdb36be9fd, type: 3}
+  m_PrefabInstance: {fileID: 220493672}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &250416445
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1472,6 +1477,7 @@ Transform:
   m_Children:
   - {fileID: 195407854}
   - {fileID: 1448435138}
+  - {fileID: 220493673}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &418202066
@@ -2116,6 +2122,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: paintballgun
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6764acc9cbd78734cbeed04edf6d631c, type: 3}
+      propertyPath: m_TagString
+      value: CameraGun
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2503,7 +2513,7 @@ GameObject:
   - component: {fileID: 632998050}
   m_Layer: 7
   m_Name: CinemachineCamera
-  m_TagString: Untagged
+  m_TagString: MouseRotation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3997,7 +4007,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1189129720}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6897,7 +6907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 988769772a2a20749a5129ef0f73c3f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  levelNumber: 1
+  levelNumber: 2
   timerText: {fileID: 1495932246}
   enemiesLeft: {fileID: 1159343554}
   timeForLevel: 30
@@ -7550,14 +7560,13 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 532085381}
   - {fileID: 365662125}
+  - {fileID: 532085381}
   - {fileID: 212369632}
   - {fileID: 1569396157}
   - {fileID: 1417272869}
+  - {fileID: 112409055}
   - {fileID: 1936928459}
   - {fileID: 455301531}
   - {fileID: 1189129723}
-  - {fileID: 112409055}
-  - {fileID: 220493672}
   - {fileID: 528782412}
