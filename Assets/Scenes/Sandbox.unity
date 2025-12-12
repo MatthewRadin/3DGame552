@@ -971,8 +971,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dca172574d8d03545945424cf2373178, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneLoaderTrigger
-  sceneAsset: {fileID: 102900000, guid: 5ceaa43bdd5d0e74ba65fb2901606a52, type: 3}
-  sceneName: MainMenu
+  sceneAsset: {fileID: 102900000, guid: c9ea2d9e2e9a1544cb97914ef291bc19, type: 3}
+  sceneName: Level_1
   playerTag: Player
   delay: 0
   useAsync: 1
