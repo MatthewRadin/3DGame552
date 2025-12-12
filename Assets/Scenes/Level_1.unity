@@ -18195,7 +18195,7 @@ MonoBehaviour:
   levelNumber: 1
   timerText: {fileID: 1495932246}
   enemiesLeft: {fileID: 1159343554}
-  timeForLevel: 30
+  timeForLevel: 45
   menuManager: {fileID: 455301527}
   dancingGuy: {fileID: 8079337167870495920, guid: 39f03e8f1f543b44eb4296df9d96758c, type: 3}
 --- !u!4 &1936928459
