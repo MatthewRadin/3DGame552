@@ -38,6 +38,9 @@ public class SceneLoaderTrigger : MonoBehaviour
 
     void TryLoad(GameObject other)
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         if (triggered) return;
 
         if (!string.IsNullOrEmpty(playerTag) && !other.CompareTag(playerTag))
