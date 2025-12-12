@@ -10,8 +10,10 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private float timeForLevel;
     [SerializeField] private MenuManager menuManager;
+    [SerializeField] private GameObject dancingGuy;
     private int startingEnemyCount = 0;
     private int numEnemiesAlive = 0;
+    private bool gameFinished = false;
 
     private void Start()
     {
@@ -19,6 +21,7 @@ public class LevelManager : MonoBehaviour
     }
     private void Update()
     {
+        if (gameFinished) return;
         timeForLevel -= Time.deltaTime;
         UpdateTimerUI();
         if (timeForLevel < 0)
@@ -55,6 +58,10 @@ public class LevelManager : MonoBehaviour
     }
     private void WinRound()
     {
+        gameFinished = true;
+
+        Instantiate(dancingGuy, GameObject.FindGameObjectWithTag("Player").transform.position, GameObject.FindGameObjectWithTag("Player").transform.rotation);
+
         if (levelNumber + 1 > PlayerPrefs.GetInt("CurrentLevel"))
             PlayerPrefs.SetInt("CurrentLevel", levelNumber + 1);
 
@@ -62,6 +69,7 @@ public class LevelManager : MonoBehaviour
     }
     private void LoseRound()
     {
+        gameFinished = true;
         menuManager.ShowLoseMenu();
     }
 }

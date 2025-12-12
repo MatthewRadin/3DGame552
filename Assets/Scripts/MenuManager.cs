@@ -121,7 +121,7 @@ public class MenuManager : MonoBehaviour
     }
     public void ShowWinMenu()
     {
-        Time.timeScale = 0f;
+        //Time.timeScale = 0f;
         gameMenuUI.SetActive(false);
         pauseMenuUI.SetActive(false);
         winMenuUI.SetActive(true);
