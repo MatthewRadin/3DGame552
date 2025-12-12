@@ -19,6 +19,7 @@ public class EnemyController : MonoBehaviour
     [Header("Shooting")]
     [SerializeField] private GameObject paintball;
     [SerializeField] private float shootForce = 25f;
+    [SerializeField] private float viewDistance = 25f;
 
     [Header("Animator")]
     [SerializeField] private Animator animator;
@@ -65,7 +66,7 @@ public class EnemyController : MonoBehaviour
             RaycastHit hit;
             Vector3 direction = mainPlayerPos - enemyPos;
 
-            if (Physics.Raycast(transform.position, direction.normalized, out hit, 25f, ~0))
+            if (Physics.Raycast(transform.position, direction.normalized, out hit, viewDistance, ~0))
             {
                 if (hit.transform.CompareTag("Player"))
                 {

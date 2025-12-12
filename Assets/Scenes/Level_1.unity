@@ -317,6 +317,7 @@ MonoBehaviour:
   maxSlopeAngle: 40
   paintball: {fileID: 7403371407402886120, guid: 8965f4fb70de41f46aa6117e0548c2ce, type: 3}
   shootForce: 25
+  viewDistance: 25
   animator: {fileID: 1192428082}
 --- !u!54 &111454088
 Rigidbody:
@@ -484,6 +485,7 @@ MonoBehaviour:
   maxSlopeAngle: 40
   paintball: {fileID: 7403371407402886120, guid: 8965f4fb70de41f46aa6117e0548c2ce, type: 3}
   shootForce: 25
+  viewDistance: 25
   animator: {fileID: 1455928845}
 --- !u!54 &112409051
 Rigidbody:
@@ -1960,6 +1962,7 @@ MonoBehaviour:
   maxSlopeAngle: 40
   paintball: {fileID: 7403371407402886120, guid: 8965f4fb70de41f46aa6117e0548c2ce, type: 3}
   shootForce: 25
+  viewDistance: 25
   animator: {fileID: 1549256511}
 --- !u!54 &561009518
 Rigidbody:
@@ -2132,6 +2135,7 @@ MonoBehaviour:
   maxSlopeAngle: 40
   paintball: {fileID: 7403371407402886120, guid: 8965f4fb70de41f46aa6117e0548c2ce, type: 3}
   shootForce: 25
+  viewDistance: 25
   animator: {fileID: 1213802985}
 --- !u!54 &603854705
 Rigidbody:
@@ -4463,6 +4467,7 @@ MonoBehaviour:
   maxSlopeAngle: 40
   paintball: {fileID: 7403371407402886120, guid: 8965f4fb70de41f46aa6117e0548c2ce, type: 3}
   shootForce: 25
+  viewDistance: 25
   animator: {fileID: 300697194}
 --- !u!54 &1060826639
 Rigidbody:
@@ -7468,7 +7473,8 @@ MonoBehaviour:
     m_Bits: 128
   maxSlopeAngle: 40
   paintball: {fileID: 7403371407402886120, guid: 8965f4fb70de41f46aa6117e0548c2ce, type: 3}
-  shootForce: 25
+  shootForce: 35
+  viewDistance: 50
   animator: {fileID: 972369762}
 --- !u!54 &1226338942
 Rigidbody:
@@ -18278,7 +18284,7 @@ MonoBehaviour:
   levelNumber: 1
   timerText: {fileID: 1495932246}
   enemiesLeft: {fileID: 1159343554}
-  timeForLevel: 45
+  timeForLevel: 60
   menuManager: {fileID: 455301527}
   dancingGuy: {fileID: 8079337167870495920, guid: 39f03e8f1f543b44eb4296df9d96758c, type: 3}
   timeLeftText: {fileID: 2009689402}
