@@ -828,7 +828,7 @@ GameObject:
   - component: {fileID: 140871371}
   m_Layer: 7
   m_Name: cameraposition
-  m_TagString: Untagged
+  m_TagString: CameraPosition
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4103,6 +4103,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: paintballgun
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 6764acc9cbd78734cbeed04edf6d631c, type: 3}
+      propertyPath: m_TagString
+      value: CameraGun
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4127,7 +4131,7 @@ GameObject:
   - component: {fileID: 950545145}
   m_Layer: 7
   m_Name: CinemachineCamera
-  m_TagString: Untagged
+  m_TagString: MouseRotation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
