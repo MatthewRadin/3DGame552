@@ -1025,7 +1025,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1149232422}
-  - {fileID: 1040640759}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &220493672
@@ -1877,6 +1876,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528253523}
   m_CullTransparentMesh: 1
+--- !u!1 &528782410
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 528782412}
+  - component: {fileID: 528782411}
+  m_Layer: 0
+  m_Name: SFX controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &528782411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528782410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d271c1b67ce4d224d9a951befc5b0307, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SfxController
+  playerDeathSound: {fileID: 8300000, guid: 50e533163247ac449bc9276b61fd895e, type: 3}
+  playerJumpSound: {fileID: 8300000, guid: d6faa5d5e7dc23e488faeb007c8fccd8, type: 3}
+  playerShootSound: {fileID: 8300000, guid: d270098c8ae95b548a5db29c0df0c757, type: 3}
+  enemyDeathSound: {fileID: 8300000, guid: 79720331cf99a9842a05d9d0d26c99d8, type: 3}
+  paintballHitmarkerSound: {fileID: 8300000, guid: a7cd40ed67e8006478e14a07b5505613, type: 3}
+--- !u!4 &528782412
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528782410}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -42.32298, y: 3.9683, z: 66.13332}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &532085379
 GameObject:
   m_ObjectHideFlags: 0
@@ -3323,155 +3371,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886188964}
   m_CullTransparentMesh: 1
---- !u!1 &1040640758
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1040640759}
-  - component: {fileID: 1040640761}
-  - component: {fileID: 1040640760}
-  m_Layer: 0
-  m_Name: MusicPlay
-  m_TagString: Music
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1040640759
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1040640758}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16.45849, y: -16.09237, z: -22.408062}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 212369632}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!82 &1040640760
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1040640758}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 37245070d12f7bd408894c7fdd1f09e2, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 0.239
-  m_Pitch: 1
-  Loop: 1
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!114 &1040640761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1040640758}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4a0b2c7e193c2743955724fb4350411, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MusicClass
-  primaryClip: {fileID: 8300000, guid: 37245070d12f7bd408894c7fdd1f09e2, type: 3}
-  secondaryClip: {fileID: 8300000, guid: c402b1406b30cb146bd2f63f83311738, type: 3}
-  primaryLoopTriggerTime: -1
-  primaryLoopStartTime: 0
-  secondaryLoops: 1
-  triggerSceneAsset: {fileID: 102900000, guid: c9ea2d9e2e9a1544cb97914ef291bc19, type: 3}
-  triggerSceneName: Level_1
 --- !u!1 &1090171327
 GameObject:
   m_ObjectHideFlags: 0
@@ -7003,7 +6902,7 @@ MonoBehaviour:
   enemiesLeft: {fileID: 1159343554}
   timeForLevel: 30
   menuManager: {fileID: 455301527}
-  dancingGuy: {fileID: 0}
+  dancingGuy: {fileID: 8079337167870495920, guid: 39f03e8f1f543b44eb4296df9d96758c, type: 3}
 --- !u!4 &1936928459
 Transform:
   m_ObjectHideFlags: 0
@@ -7661,3 +7560,4 @@ SceneRoots:
   - {fileID: 1189129723}
   - {fileID: 112409055}
   - {fileID: 220493672}
+  - {fileID: 528782412}

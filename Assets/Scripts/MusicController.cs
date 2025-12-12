@@ -10,22 +10,19 @@ public class MusicClass : MonoBehaviour
 {
     [SerializeField] private AudioClip primaryClip;
     [SerializeField] private AudioClip secondaryClip;
-    [SerializeField, HideInInspector] private float primaryLoopTriggerTime = -1f;
-    [SerializeField, HideInInspector] private float primaryLoopStartTime = 0f;
-    [SerializeField] private bool secondaryLoops = true;
-#if UNITY_EDITOR
-    [SerializeField] private SceneAsset triggerSceneAsset = null;
-#endif
-    [SerializeField, HideInInspector] private string triggerSceneName = "";
+    [SerializeField] private AudioClip tertiaryClip;
+
+    [Header("Menu/Tutorial Scenes (Primary Music)")]
+    [SerializeField] private string[] menuSceneNames = { "MainMenu", "Sandbox" };
 
     private AudioSource audioSource;
     private Coroutine switchCoroutine;
-
-    // NEW: singleton instance to prevent duplicates and restarts on reload
     private static MusicClass instance;
+    private bool isPlayingSecondary = false;
+    private bool isPlayingTertiary = false;
+    private bool waitingToSwitch = false;
     private void Awake()
     {
-        // If another instance exists, remove this one immediately.
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
@@ -34,64 +31,162 @@ public class MusicClass : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad(gameObject);
+        Debug.Log($"MusicController persisting: {gameObject.name}");
 
         audioSource = GetComponent<AudioSource>();
-
-        // Only (re)assign/play primaryClip if needed (prevents restart on scene reload).
-        if (primaryClip != null && (audioSource.clip != primaryClip || !audioSource.isPlaying))
+        if (audioSource == null)
         {
-            audioSource.clip = primaryClip;
-            audioSource.time = 0f;
-            audioSource.Play();
-            audioSource.loop = primaryLoopStartTime <= 0f;
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Determine initial scene and play appropriate music
+        Scene currentScene = SceneManager.GetActiveScene();
+        if (IsMenuScene(currentScene.name))
+        {
+            PlayPrimaryMusic();
+        }
+        else
+        {
+            // Starting in a level - play tertiary immediately
+            PlayTertiaryMusic();
         }
 
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void OnDestroy() { SceneManager.sceneLoaded -= OnSceneLoaded; }
-
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        if (triggerSceneAsset != null)
-        {
-            triggerSceneName = triggerSceneAsset.name;
-        }
+    private void OnDestroy() 
+    { 
+        Debug.Log($"MusicController being destroyed: {gameObject.name}");
+        SceneManager.sceneLoaded -= OnSceneLoaded; 
     }
-#endif
 
-private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-{
-    if (string.IsNullOrEmpty(triggerSceneName)) return;
-    if (scene.name != triggerSceneName) return;
-
-    if (audioSource == null || audioSource.clip != primaryClip || !audioSource.isPlaying) return;
-    float trigger = primaryLoopTriggerTime > 0f ? primaryLoopTriggerTime : primaryClip.length;
-    float current = Mathf.Clamp(audioSource.time, 0f, primaryClip.length);
-    float delay = trigger >= current ? trigger - current : (primaryClip.length - current) + trigger;
-    if (switchCoroutine != null) StopCoroutine(switchCoroutine);
-    switchCoroutine = StartCoroutine(SwitchAfterDelay(delay));
-}
-
-    private System.Collections.IEnumerator SwitchAfterDelay(float d)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        yield return new WaitForSeconds(d);
-        if (audioSource == null || audioSource.clip != primaryClip || !audioSource.isPlaying) { switchCoroutine = null; yield break; }
-        if (secondaryClip != null)
+        // Check if we're in a menu/tutorial scene
+        if (IsMenuScene(scene.name))
         {
-            audioSource.clip = secondaryClip;
-            audioSource.time = 0f;
-            audioSource.Play();
-            audioSource.loop = secondaryLoops;
+            // Don't reset music when returning to menu - keep playing current track
+            waitingToSwitch = false;
+            if (switchCoroutine != null)
+            {
+                StopCoroutine(switchCoroutine);
+                switchCoroutine = null;
+            }
         }
         else
         {
-            if (primaryLoopStartTime <= 0f)
-                audioSource.loop = true;
-            else
-                audioSource.time = Mathf.Clamp(primaryLoopStartTime, 0f, primaryClip.length);
+            // In a level - start the transition sequence ONLY if still on primary music
+            if (!isPlayingSecondary && !isPlayingTertiary && !waitingToSwitch)
+            {
+                WaitAndSwitchToSecondary();
+            }
+            // If already on secondary or tertiary, just let it continue playing
         }
+    }
+
+    private bool IsMenuScene(string sceneName)
+    {
+        foreach (string menuScene in menuSceneNames)
+        {
+            if (sceneName == menuScene)
+                return true;
+        }
+        return false;
+    }
+
+    private void PlayPrimaryMusic()
+    {
+        if (primaryClip == null) return;
+        
+        audioSource.clip = primaryClip;
+        audioSource.loop = true;
+        audioSource.volume = 1f;
+        audioSource.Play();
+        isPlayingSecondary = false;
+        isPlayingTertiary = false;
+    }
+
+    private void PlaySecondaryMusic()
+    {
+        if (secondaryClip == null) return;
+        
+        // Only restart if not already playing secondary
+        if (audioSource.clip != secondaryClip || !audioSource.isPlaying)
+        {
+            audioSource.clip = secondaryClip;
+            audioSource.loop = false; // Don't loop, will switch to tertiary after
+            audioSource.volume = 1f;
+            audioSource.Play();
+        }
+        
+        isPlayingSecondary = true;
+        isPlayingTertiary = false;
+        waitingToSwitch = false;
+        
+        // Queue switch to tertiary after secondary finishes (only if not already queued)
+        if (switchCoroutine == null)
+        {
+            switchCoroutine = StartCoroutine(WaitForSecondaryToEnd());
+        }
+    }
+
+    private void PlayTertiaryMusic()
+    {
+        if (tertiaryClip == null) return;
+        
+        audioSource.clip = tertiaryClip;
+        audioSource.loop = true; // Loop forever
+        audioSource.volume = 1f;
+        audioSource.Play();
+        isPlayingSecondary = false;
+        isPlayingTertiary = true;
+        waitingToSwitch = false;
+    }
+
+    private void WaitAndSwitchToSecondary()
+    {
+        if (switchCoroutine != null) StopCoroutine(switchCoroutine);
+        switchCoroutine = StartCoroutine(WaitForSongEnd());
+    }
+
+    private System.Collections.IEnumerator WaitForSongEnd()
+    {
+        waitingToSwitch = true;
+        
+        if (primaryClip == null || audioSource == null)
+        {
+            waitingToSwitch = false;
+            yield break;
+        }
+
+        // Calculate time remaining in primary song
+        float timeRemaining = primaryClip.length - audioSource.time;
+        
+        // Wait for song to finish
+        yield return new WaitForSeconds(timeRemaining);
+        
+        // Switch to secondary
+        PlaySecondaryMusic();
+        
+        switchCoroutine = null;
+    }
+
+    private System.Collections.IEnumerator WaitForSecondaryToEnd()
+    {
+        if (secondaryClip == null || audioSource == null)
+        {
+            yield break;
+        }
+
+        // Calculate time remaining in secondary song based on current position
+        float timeRemaining = secondaryClip.length - audioSource.time;
+        
+        // Wait for secondary song to finish
+        yield return new WaitForSeconds(timeRemaining);
+        
+        // Switch to tertiary (infinite loop)
+        PlayTertiaryMusic();
+        
         switchCoroutine = null;
     }
 
